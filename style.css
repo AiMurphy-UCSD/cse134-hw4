@@ -293,9 +293,10 @@ input, textarea {
   background: var(--bg);
   color: var(--text);
   width: 100%;
-  margin-bottom: 2dvh;
+  margin-bottom: .5dvh;
   font-family: Inter, system-ui, -apple-system, sans-serif;
 }
+
 
 /**/ 
 
@@ -337,6 +338,19 @@ label span {
   color: #3a9f3a;
   font-size: 0.9rem;
   min-height: 1.2rem;
+}
+
+.flash-error {
+  animation: flash 0.3s ease-in-out;
+}
+
+@keyframes flash {
+  0% { background-color: #ffdddd; }
+  100% { background-color: var(--bg); }
+}
+
+#char-counter {
+  font-size: 0.9rem;
 }
 
 /**/

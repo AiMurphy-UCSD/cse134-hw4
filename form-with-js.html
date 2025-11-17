@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aidan Murphy - Contact</title>
+  <link rel="icon" href="favicon.ico">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="index.html">Aidan Murphy</a></li>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="resume.html">Resume</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li>
+          <dialog id="modal">
+            <h1>Light/Dark Mode Toggle</h1>
+            <p>Click Close to close modal</p>
+            <form method="dialog">
+              <button>Close</button>
+            </form>
+        </dialog>
+        <button id="mode" onclick="modal.show()"></button></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h1 id="ctitle">Contact Me</h1>
+    <section id="contact-form">
+      <form id="contactForm" action="https://httpbin.org/post" method="post">
+
+        <fieldset>
+          <legend>Contact Form</legend>
+
+          <input type="hidden" name="possible_bot" value="true">
+
+          <input type="hidden" id="form-errors" name="form-errors" value=""> 
+
+          <label for="name">Name <span aria-hidden="true">*</span></label>
+          <input 
+            type="text" 
+            id="name" 
+            name="name" 
+            placeholder="Your name..." 
+            required 
+            minlength="2"
+            maxlength="40"
+            pattern="[A-Za-z\s]+"
+          >
+
+          <label for="email">Email <span aria-hidden="true">*</span></label>
+          <input 
+            type="email" 
+            id="email" 
+            name="email" 
+            placeholder="you@example.com"
+            required
+          >
+
+          <label for="subject">Subject <span aria-hidden="true">*</span></label>
+          <input 
+            type="text" 
+            id="subject" 
+            name="subject" 
+            placeholder="Reason for reaching out..." 
+            minlength="5"
+            maxlength="60"
+            pattern="[A-Za-z0-9\s.,!?'\-]+"
+            required
+          >
+
+          <label for="message">Message <span aria-hidden="true">*</span></label>
+          <textarea 
+            id="message" 
+            name="message" 
+            placeholder="Write your message here..."
+            rows="5" 
+            cols="33" 
+            minlength="5"
+            maxlength="500"
+            required
+          ></textarea>
+
+          <output id="error-output"></output>
+          <output id="info-output"></output>
+
+          <button type="submit">Send</button>
+        </fieldset>
+
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Aidan Murphy. All Rights Reserved.</p>
+  </footer>
+
+
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+    
+    const form = document.getElementById("contactForm");
+    const errorOut = document.getElementById("error-output");
+    const infoOut = document.getElementById("info-output");
+
+    const nameField = document.getElementById("name");
+    const emailField = document.getElementById("email");
+    const subjectField = document.getElementById("subject");
+    const messageField = document.getElementById("message");
+
+    const namePattern = /^[A-Za-z\s]+$/;
+    const subjectPattern = /^[A-Za-z0-9\s.,!?'\-]+$/;
+
+    let form_errors = [];
+
+    const formErrorsInput = document.getElementById("form-errors");
+
+
+    function showTempError(msg) {
+        errorOut.textContent = msg;
+        errorOut.style.opacity = 1;
+        setTimeout(() => {
+          errorOut.style.opacity = 0;
+        }, 2000);
+    }
+
+    function flashField(elem) {
+        elem.classList.add("flash-error");
+        setTimeout(() => elem.classList.remove("flash-error"), 300);
+    }
+
+    // ILLEGAL CHARACTER CHECKS
+    function attachIllegalCharCheck(field, pattern, fieldName) {
+        field.addEventListener("input", () => {
+            if (!pattern.test(field.value)) {
+                flashField(field);
+                showTempError(`Illegal character typed in ${fieldName}.`);
+                field.setCustomValidity(`Illegal character in ${fieldName}.`);
+            } else {
+                field.setCustomValidity("");
+            }
+        });
+    }
+
+    attachIllegalCharCheck(nameField, namePattern, "Name");
+    attachIllegalCharCheck(subjectField, subjectPattern, "Subject");
+
+    // CHARACTER COUNTER
+    const maxChars = messageField.getAttribute("maxlength");
+    const charCounter = document.createElement("div");
+    charCounter.id = "char-counter";
+    form.querySelector("fieldset").insertBefore(charCounter, document.getElementById("error-output"));
+
+    function updateCounter() {
+        const remaining = maxChars - messageField.value.length;
+        charCounter.textContent = `${remaining} characters remaining`;
+
+        charCounter.style.color = remaining <= 20 ? "#d33" : "var(--text)";
+    }
+
+    messageField.addEventListener("input", updateCounter);
+    updateCounter();
+
+    const submitBtn = form.querySelector("button[type='submit']");
+    // SUBMIT HANDLER
+    submitBtn.addEventListener("click", (e) => {
+
+        // Reset current visible messages
+        errorOut.textContent = "";
+        infoOut.textContent = "";
+
+        let hadErrors = false;
+
+        // Check each field manually
+        if (!nameField.checkValidity()) {
+            form_errors.push({
+                field: "name",
+                value: nameField.value,
+                message: "Name is invalid or missing."
+            });
+            hadErrors = true;
+        }
+
+        if (!emailField.checkValidity()) {
+            form_errors.push({
+                field: "email",
+                value: emailField.value,
+                message: "Email is invalid or missing."
+            });
+            hadErrors = true;
+        }
+
+        if (!subjectField.checkValidity()) {
+            form_errors.push({
+                field: "subject",
+                value: subjectField.value,
+                message: "Subject is invalid or missing."
+            });
+            hadErrors = true;
+        }
+
+        if (!messageField.checkValidity()) {
+            form_errors.push({
+                field: "message",
+                value: messageField.value,
+                message: "Message too short or missing."
+            });
+            hadErrors = true;
+        }
+
+        // If any errors detected BEFORE submit fails,
+        // update the hidden input NOW (submit handler will never run)
+        if (hadErrors) {
+            formErrorsInput.value = JSON.stringify(form_errors);
+            console.log("Logged errors:", form_errors); // helpful for you
+        }
+        else{
+            infoOut.textContent = "Form successfully submitted!";
+        }
+    });
+
+    });
+  </script>
+
+</body>
+</html>
