@@ -217,29 +217,9 @@
         }
     });
 
-      const modeBtn = document.getElementById("mode");
-      const root = document.documentElement;
-
-      // Load saved theme
-      const savedTheme = localStorage.getItem("theme");
-      if (savedTheme === "dark") {
-        root.setAttribute("data-theme", "dark");
-      }
-
-      modeBtn.addEventListener("click", () => {
-        const isDark = root.getAttribute("data-theme") === "dark";
-
-        if (isDark) {
-          root.removeAttribute("data-theme");
-          localStorage.setItem("theme", "light");
-        } else {
-          root.setAttribute("data-theme", "dark");
-          localStorage.setItem("theme", "dark");
-        }
-      });
-
     });
   </script>
+  <script src="scripts/theme.js"></script>
 
 </body>
 </html>
