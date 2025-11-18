@@ -8,12 +8,10 @@
   --text: #000000;
 }
 
-@media (color-scheme: dark) {
-  :root {
+[data-theme="dark"] {
+    --bg: #0d0d0d;
+    --text: #ffffff;
     --accent: #4070F4;
-    --bg: #121212;
-    --text: #fafafa;
-  }
 }
 
 /* ==== Base ==== */
@@ -107,8 +105,24 @@ header {
     #mode:hover::after {
       width: 100%;
     }
+
   }
+
 }
+    /*When dark theme is active, swap icon */
+    [data-theme="dark"] #mode {
+      background: url("assets/lightmode.webp") no-repeat center / cover;
+      filter: brightness(0) invert(1);
+    }
+
+    /* Dark mode overrides for form fields */
+    [data-theme="dark"] input,
+    [data-theme="dark"] textarea,
+    [data-theme="dark"] select {
+        color: #000 !important;           /* Text inside inputs becomes black */
+      
+        border-color: #444;                /* Darker border for contrast */
+    }
 
 /* ==== MAIN SECTIONS ==== */
 main {
